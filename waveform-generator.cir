@@ -1,0 +1,63 @@
+* C:\Users\princet\Documents\waveform-generator\waveform-generator.cir
+
+* EESchema Netlist Version 1.1 (Spice format) creation date: 4/6/2017 4:04:36 PM
+
+* To exclude a component from the Spice Netlist add [Spice_Netlist_Enabled] user FIELD set to: N
+* To reorder the component spice node sequence add [Spice_Node_Sequence] user FIELD and define sequence: 2,1,0
+
+* Sheet Name: /
+J1  Net-_C3-Pad1_ USB_D- USB_D+ GNDA GNDA USB_B		
+U1  GNDA +3V3 Net-_C3-Pad1_ LD1117S33TR		
+C3  Net-_C3-Pad1_ GNDA 100n		
+R8  EEDATA Net-_R8-Pad2_ 2.2k		
+R10  Net-_R10-Pad1_ GNDA 12k		
+R9  Net-_R9-Pad1_ +3V3 1k		
+R6  +3V3 EECS 10k		
+R7  +3V3 EECLK 10k		
+R5  +3V3 EEDATA 10k		
+C1  FTOSC- GNDA 27p		
+C2  FTOSC+ GNDA 27p		
+C6  Net-_C10-Pad1_ GNDA 3.3u		
+C7  Net-_C10-Pad1_ GNDA 100n		
+C8  Net-_C10-Pad1_ GNDA 100n		
+C9  Net-_C10-Pad1_ GNDA 100n		
+C10  Net-_C10-Pad1_ GNDA 100n		
+C11  Net-_C10-Pad1_ GNDA 100n		
+C12  Net-_C10-Pad1_ GNDA 100n		
+C13  Net-_C10-Pad1_ GNDA 100n		
+L1  +3V3 FTVPHY 800m		
+C20  FTVPHY GNDA 100n		
+L2  +3V3 FTVPLL 800m		
+C22  FTVPLL GNDA 100n		
+D1  GNDA Net-_D1-Pad2_ LED_Small		
+R2  Net-_D1-Pad2_ +3V3 470		
+J4  +3V3 GNDA Net-_J4-Pad3_ Net-_J4-Pad4_ Net-_J4-Pad5_ Net-_J4-Pad6_ Net-_J4-Pad7_ Net-_J4-Pad8_ Net-_J4-Pad9_ Net-_J4-Pad10_ Net-_J4-Pad11_ Net-_J4-Pad12_ Net-_J4-Pad13_ Net-_J4-Pad14_ Net-_J4-Pad15_ Net-_J4-Pad16_ Net-_J4-Pad17_ Net-_J4-Pad18_ CONN_02X09		
+R3  Net-_D2-Pad2_ +3V3 470		
+D2  FTTXLED Net-_D2-Pad2_ LED_Small		
+R4  Net-_D3-Pad2_ +3V3 470		
+D3  FTRXLED Net-_D3-Pad2_ LED_Small		
+U3  Net-_C17-Pad2_ +3V3 Net-_C14-Pad1_ GNDA DAC_CLK /SDATA /SCK /~FSYNC GNDA Net-_C18-Pad1_ GNDA AD9837		
+C17  +3V3 Net-_C17-Pad2_ 10n		
+C16  +3V3 GNDA 100n		
+C14  Net-_C14-Pad1_ GNDA 100n		
+U4  GNDA FTOSC- FTOSC+ FTVPHY GNDA Net-_R10-Pad1_ USB_D- USB_D+ FTVPLL GNDA GNDA Net-_C10-Pad1_ GNDA Net-_R9-Pad1_ GNDA /SCK /SDATA ? /~FSYNC +3V3 ? ? ? ? GNDA ? ? ? FTRXLED FTTXLED +3V3 ? ? ? GNDA ? Net-_C10-Pad1_ Net-_J4-Pad3_ Net-_J4-Pad5_ Net-_J4-Pad7_ Net-_J4-Pad9_ +3V3 Net-_J4-Pad11_ Net-_J4-Pad13_ Net-_J4-Pad15_ Net-_J4-Pad17_ GNDA Net-_J4-Pad4_ Net-_C10-Pad1_ +3V3 GNDA Net-_J4-Pad6_ Net-_J4-Pad8_ Net-_J4-Pad10_ Net-_J4-Pad12_ +3V3 Net-_J4-Pad14_ Net-_J4-Pad16_ Net-_J4-Pad18_ ? EEDATA EECLK EECS Net-_C10-Pad1_ FT2232H		
+J3  Net-_C18-Pad1_ GNDA VOUT		
+C18  Net-_C18-Pad1_ GNDA 100n		
+J2  Net-_J2-Pad1_ GNDA EXT_CLK		
+R1  Net-_J2-Pad1_ GNDA 50		
+C5  +3V3 GNDA 100n		
+JP1  Net-_JP1-Pad1_ DAC_CLK Net-_J2-Pad1_ CLK_SELECT		
+C21  FTVPLL GNDA 4.7u		
+C19  FTVPHY GNDA 4.7u		
+C4  +3V3 GNDA 10u		
+C15  Net-_C14-Pad1_ GNDA 10u		
+U2  Net-_R8-Pad2_ GNDA EEDATA EECLK EECS +3V3 93LC46BT		
+C23  +3V3 GNDA 100n		
+Y2  ? GNDA Net-_JP1-Pad1_ +3V3 OXETGCJANF		
+Y1  FTOSC- FTOSC+ 12MHz		
+TP4  Net-_C18-Pad1_ VOUT		
+TP3  +3V3 +3.3V		
+TP1  Net-_C3-Pad1_ VBUS		
+TP2  GNDA GND		
+
+.end
