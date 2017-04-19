@@ -137,7 +137,7 @@ size_t pack_impl(uint8_t *buffer, T&& arg, Args&&... args) {
         std::is_pod<std::remove_reference<T>>(),
         "Cannot pack a non-POD into a buffer."
     );
-    static_assert(sizeof(T) < Size);
+    static_assert(sizeof(T) < Size, "Buffer overflow when expanding a pack.");
 
     memcpy(buffer, &arg, sizeof(T));
     return sizeof(T) + pack_impl<Size - sizeof(T)>(
@@ -177,12 +177,12 @@ namespace {
 
 packet fsyncPacket(bool fsyncHigh)
 {
-    uint8_t pins =
+    uint8_t pin_state =
         pins::sck |
         (fsyncHigh ? pins::nfsync : 0);
     return {
         opcodes::set_low_bits,
-        pins,
+        pin_state,
         uint8_t(pins::sck | pins::sdata | pins::nfsync)
     };
 }
@@ -349,12 +349,12 @@ void device::init_dac()
 }
 
 void device::writeFSync(bool high) {
-    uint8_t pins =
+    uint8_t pin_state =
         pins::sck |
         (high ? pins::nfsync : 0);
     sendCommand({
         opcodes::set_low_bits,
-        pins,
+        pin_state,
         uint8_t(pins::sck | pins::sdata | pins::nfsync)
     });
 }
