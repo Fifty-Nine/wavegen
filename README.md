@@ -33,7 +33,8 @@ LEDs.
 At some point I'll document the pinout for the J4 connector here.
 Until then the pinout is available in the schematic.
 
-Indicators D2 and D3 were originally intended as SPI TX/RX indicators, but
+Indicators D2 and D3 were originally intended as SPI TX/RX indicators (and
+also that the AD 9837 has no TX...), but
 that was before I realized that the FT2232H only enables them for UART
 communication. There's nothing stopping the control software from using
 them for other purposes, although the silkscreen on rev. 2 would be
