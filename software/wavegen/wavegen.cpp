@@ -24,6 +24,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "ad9837.h"
 #include "util.h"
 #include <ftdi.h>
 
@@ -79,43 +80,6 @@ enum class opcodes : uint8_t {
 
 constexpr uint8_t bad_opcode_reply = 0xfa;
 constexpr uint16_t spi_clkdiv = 0x05db; /* 1 MHz */
-
-namespace ad9837 {
-
-constexpr uint32_t mclk_freq = 16000000;
-
-enum reg_mask : uint16_t {
-    control = 0x0000,
-    freq0 = 0x4000,
-    freq1 = 0x8000,
-    phase0 = 0xc000,
-    phase1 = 0xd000
-};
-
-enum ctrl_bits : uint16_t {
-    b28     = 0x2000,
-    hlb     = 0x1000,
-    fsel    = 0x0800,
-    psel    = 0x0400,
-    reset   = 0x0100,
-    sleep1  = 0x0080,
-    sleep12 = 0x0040,
-    opbiten = 0x0020,
-    div2    = 0x0008,
-    mode    = 0x0002
-};
-
-void compute_freg(uint32_t frequency, uint16_t& high, uint16_t& low)
-{
-    uint64_t result = frequency;
-    result <<= 28;
-    result /= mclk_freq;
-
-    high = (result >> 14) & mask(14);
-    low  = result & mask(14);
-}
-
-} /* namespace ad9837 */
 
 static wavegen_error format_error(
     std::string when, ftdi_context *ctxt)

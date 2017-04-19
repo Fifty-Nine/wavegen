@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(wavegen)
 
-add_library(wavegen wavegen.h util.h wavegen.cpp)
+add_library(wavegen wavegen.h util.h ad9837.h ad9837.cpp wavegen.cpp)
 
 set_target_properties(wavegen
                       PROPERTIES POSITION_INDEPENDENT_CODE ON)

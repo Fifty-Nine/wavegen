@@ -17,6 +17,7 @@
 #ifndef WAVEGEN_UTIL_H
 #define WAVEGEN_UTIL_H
 
+#include <cstddef>
 #include <type_traits>
 
 namespace wavegen
