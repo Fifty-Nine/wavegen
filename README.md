@@ -1,3 +1,6 @@
+Introduction
+============
+
 This is an implementation of a USB-controlled Analog Devices AD9837-based 
 function generator that can generate sine, triangle and square waves up to 
 around 200 kHz or so.
@@ -32,9 +35,9 @@ Until then the pinout is available in the schematic.
 
 Indicators D2 and D3 were originally intended as SPI TX/RX indicators, but
 that was before I realized that the FT2232H only enables them for UART
-communication. There's nothing stopping the control software from using
-them for other purposes, although the silkscreen on rev. 2 would be
-misleading.
+communication (and also that the AD 9837 has no TX...). There's nothing
+stopping the control software from using them for other purposes, although
+the silkscreen on rev. 2 would be misleading.
 
 Firmware
 ========
