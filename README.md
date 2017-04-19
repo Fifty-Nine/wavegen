@@ -1,3 +1,6 @@
+Introduction
+============
+
 This is an implementation of a USB-controlled Analog Devices AD9837-based 
 function generator that can generate sine, triangle and square waves up to 
 around 200 kHz or so.
