@@ -154,7 +154,8 @@ packet fsyncPacket(bool fsyncHigh)
 } /* namespace */
 
 device::device() :
-    ctxt { ftdi_new() }
+    ctxt { ftdi_new() },
+    mclk_freq { ad9837::default_mclk_freq }
 {
     if (ftdi_set_interface(ctxt, INTERFACE_A)) {
         onFtdiError(WHEN("ftdi_set_interface"));
@@ -217,14 +218,19 @@ device& device::operator=(device&& o) noexcept(true) {
     return *this;
 }
 
+void device::setClockFrequency(uint32_t freq)
+{
+    mclk_freq = freq;
+}
+
 void device::setFrequency(channel_id channel, uint32_t freq)
 {
-    if (freq >= ad9837::mclk_freq) {
+    if (freq >= ad9837::default_mclk_freq) {
         onLogicalError(WHEN("unsupported frequency"));
     }
     uint16_t freg_hi;
     uint16_t freg_lo;
-    ad9837::compute_freg(freq, freg_hi, freg_lo);
+    ad9837::compute_freg(freq, mclk_freq, freg_hi, freg_lo);
 
     uint16_t reg_mask = (channel == 0) ?
         ad9837::reg_mask::freq0 :

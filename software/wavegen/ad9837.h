@@ -22,7 +22,7 @@
 namespace wavegen {
 namespace ad9837 {
 
-constexpr uint32_t mclk_freq = 16000000;
+constexpr uint32_t default_mclk_freq = 16000000;
 
 enum reg_mask : uint16_t {
     control = 0x0000,
@@ -50,7 +50,9 @@ enum ctrl_bits : uint16_t {
  * Returns the result as a 28-bit value split into two 14-bit values, as is
  * required by the underlying SPI protocol.
  */
-void compute_freg(uint32_t frequency, uint16_t& high, uint16_t& low);
+void compute_freg(
+    uint32_t frequency, uint32_t mclk_frequency, uint16_t& high, uint16_t& low
+);
 
 } /* namespace ad9837 */
 

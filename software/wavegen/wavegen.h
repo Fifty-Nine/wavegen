@@ -48,6 +48,7 @@ public:
     device& operator=(const device&) = delete;
     device& operator=(device&&) noexcept(true);
 
+    void setClockFrequency(uint32_t freq);
     void setFrequency(channel_id channel, uint32_t freq);
     void setPhase(channel_id channel, uint16_t phase);
     void setOutput(output_waveform type, channel_id channel);
@@ -66,6 +67,7 @@ private:
 
     struct ftdi_context *ctxt;
     bool init_done = false;
+    uint32_t mclk_freq;
 };
 
 class wavegen_error : public std::runtime_error

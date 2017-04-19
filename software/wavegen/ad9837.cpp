@@ -21,6 +21,7 @@
 
 void wavegen::ad9837::compute_freg(
     uint32_t frequency,
+    uint32_t mclk_freq,
     uint16_t& high,
     uint16_t& low)
 {
