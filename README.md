@@ -59,6 +59,7 @@ C++ and requires a compiler with C++11 support.
 To build the library, you will need CMake and a suitable C++ compiler. On
 linux, the build steps go something like this:
 
+```
 $ sudo apt-get install git build-essential cmake libftdi-dev
 ...
 $ git clone git@github.com:Fifty-Nine/wavegen
@@ -73,6 +74,7 @@ $ make
 $ sudo make install
 ...
 $
+```
 
 At this point, you can use the `wavegen-test` program to confirm that the device
 is working. The test program initializes the device and repeatedly performs a
