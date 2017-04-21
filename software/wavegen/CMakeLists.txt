@@ -13,6 +13,14 @@ set(wavegen_SOURCE_FILES
     wavegen.cpp
     wavegen.h
 )
+
+if (LIBFTDI_FOUND)
+    set(wavegen_SOURCE_FILES
+        ${wavegen_SOURCE_FILES}
+        ft2232h-spi-libftdi.cpp
+    )
+endif()
+
 add_library(wavegen ${wavegen_SOURCE_FILES})
 
 set_target_properties(wavegen

@@ -18,8 +18,9 @@
 #define WAVEGEN_H
 
 #include <cstdint>
-#include <stdexcept>
-#include <initializer_list>
+#include <string>
+
+#include "ft2232h-spi.h"
 
 struct ftdi_context;
 
@@ -53,19 +54,9 @@ public:
     void setOutput(output_waveform type, channel_id channel);
 
 private:
-    void sync();
-    void init_dac();
+    void initDac();
 
-    void writeFSync(bool high);
-    void sendCommand(const packet& p);
-    void sendData(const packet& p);
-    void onFtdiError(const std::string& when);
-    void onLogicalError(const std::string& what);
-    void expectResponse(const packet& p);
-    void expectEmptyResponse();
-
-    struct ftdi_context *ctxt;
-    bool init_done = false;
+    ft2232h_spi spi;
     uint32_t mclk_freq;
 };
 

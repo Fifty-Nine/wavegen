@@ -34,135 +34,31 @@ namespace wavegen {
 
 namespace {
 
-enum pins : uint8_t {
-    adbus0 = 0x01,
-    adbus1 = 0x02,
-    adbus2 = 0x04,
-    adbus3 = 0x08,
-    adbus4 = 0x10,
-    adbus5 = 0x20,
-    adbus6 = 0x40,
-    adbus7 = 0x80,
-
-    sck = adbus0,
-    sdata = adbus1,
-    nfsync = adbus3
-};
-
 constexpr int vid = 0x0403;
 constexpr int pid = 0x6010;
-
-constexpr uint8_t output_pins = pins::sck | pins::sdata | pins::nfsync;
-constexpr int baudrate = 1000000 / 4; /* 1 MHz */
-
-/*
- * The libftdi macros result in an int being deduced by default, but
- * they are always packed into a uint8. This enum makes sure we don't
- * accidentally expand them.
- */
-enum class opcodes : uint8_t {
-    clkdiv_5_disable = DIS_DIV_5,
-    clkdiv_5_enable = EN_DIV_5,
-    adaptive_clk_disable = DIS_ADAPTIVE,
-    adaptive_clk_enable = EN_ADAPTIVE,
-    three_phase_disable = DIS_3_PHASE,
-    three_phase_enable = EN_3_PHASE,
-    set_clkdiv = TCK_DIVISOR,
-    set_low_bits = SET_BITS_LOW,
-    set_high_bits = SET_BITS_HIGH,
-    loopback_enable = LOOPBACK_START,
-    loopback_disable = LOOPBACK_END,
-    write = MPSSE_DO_WRITE,
-    bogus = 0xab
-};
-
-constexpr uint8_t bad_opcode_reply = 0xfa;
-constexpr uint16_t spi_clkdiv = 0x05db; /* 1 MHz */
-
-static error format_error(
-    std::string when, ftdi_context *ctxt)
-{
-    when += ": ";
-    when += ftdi_get_error_string(ctxt);
-    return error(when);
-}
-
-packet fsyncPacket(bool fsyncHigh)
-{
-    uint8_t pin_state =
-        pins::sck |
-        (fsyncHigh ? pins::nfsync : 0);
-    return {
-        opcodes::set_low_bits,
-        pin_state,
-        uint8_t(pins::sck | pins::sdata | pins::nfsync)
-    };
-}
 
 } /* namespace */
 
 device::device() :
-    ctxt { ftdi_new() },
+    spi { ft2232h_spi::pins::adbus3, vid, pid, "USB Function Generator" },
     mclk_freq { ad9837::default_mclk_freq }
 {
-    if (ftdi_set_interface(ctxt, INTERFACE_A)) {
-        onFtdiError(WHEN("ftdi_set_interface"));
-    }
-
-    if (ftdi_usb_open_desc(ctxt, vid, pid, "USB Function Generator", nullptr)) {
-        onFtdiError(WHEN("ftdi_usb_open_desc"));
-    }
-
-    if (ftdi_set_bitmode(ctxt, 0, BITMODE_RESET)) {
-        onFtdiError(WHEN("ftdi_set_bitmode"));
-    }
-
-    if (ftdi_set_bitmode(ctxt, 0, BITMODE_MPSSE)) {
-        onFtdiError(WHEN("ftdi_set_bitmode"));
-    }
-
-    sync();
-
-    /* Set up basic parameters. */
-    sendCommand({
-            opcodes::clkdiv_5_enable,
-            opcodes::adaptive_clk_disable,
-            opcodes::three_phase_disable
-    });
-
-    /* Set the baudrate. */
-    sendCommand({
-        opcodes::set_clkdiv, spi_clkdiv
-    });
-
-    /* Configure pin states. */
-    sendCommand(fsyncPacket(/*fsyncHigh*/true));
-    sendCommand({
-        opcodes::set_high_bits,
-        uint8_t(0),
-        uint8_t(0)
-    });
-    expectEmptyResponse();
-
-    init_dac();
-    expectEmptyResponse();
-
-    init_done = true;
+    initDac();
 }
 
 device::~device() noexcept(true)
 {
-    ftdi_free(ctxt);
 }
 
 device::device(device&& o) noexcept(true) :
-    ctxt { o.ctxt }
+    spi { std::move(o.spi) },
+    mclk_freq { o.mclk_freq }
 {
-    o.ctxt = nullptr;
 }
 
 device& device::operator=(device&& o) noexcept(true) {
-    std::swap(o.ctxt, ctxt);
+    std::swap(o.spi, spi);
+    mclk_freq = o.mclk_freq;
     return *this;
 }
 
@@ -174,7 +70,7 @@ void device::setClockFrequency(uint32_t freq)
 void device::setFrequency(channel_id channel, uint32_t freq)
 {
     if (freq >= ad9837::default_mclk_freq) {
-        onLogicalError(WHEN("unsupported frequency"));
+        throw error(WHEN("unsupported frequency"));
     }
     uint16_t freg_hi;
     uint16_t freg_lo;
@@ -187,21 +83,21 @@ void device::setFrequency(channel_id channel, uint32_t freq)
     freg_hi |= reg_mask;
     freg_lo |= reg_mask;
 
-    sendData({byteswap(freg_lo)});
-    sendData({byteswap(freg_hi)});
+    spi.transmit({byteswap(freg_lo)});
+    spi.transmit({byteswap(freg_hi)});
 }
 
 void device::setPhase(channel_id channel, uint16_t phase)
 {
     if (phase & ~mask(12U)) {
-        onLogicalError(WHEN("unsupported phase"));
+        throw error(WHEN("unsupported phase"));
     }
     uint16_t data = (channel == 0) ?
         ad9837::reg_mask::phase0 :
         ad9837::reg_mask::phase1 ;
 
     data |= phase;
-    sendData({byteswap(data)});
+    spi.transmit({byteswap(data)});
 }
 
 void device::setOutput(output_waveform type, channel_id channel)
@@ -226,38 +122,17 @@ void device::setOutput(output_waveform type, channel_id channel)
         break;
     }
 
-    sendData({byteswap(command)});
+    spi.transmit({byteswap(command)});
 }
 
-void device::sync()
-{
-    uint8_t buffer[2];
-    sendCommand(opcodes::loopback_enable);
-    expectEmptyResponse();
-
-    sendCommand(opcodes::bogus);
-
-    expectResponse({
-        bad_opcode_reply,
-        opcodes::bogus,
-    });
-    expectEmptyResponse();
-
-    sendCommand(opcodes::loopback_disable);
-}
-
-void device::init_dac()
+void device::initDac()
 {
     packet ctrl_reset = {
         uint8_t(0b00100001),
         uint8_t(0b00000000)
     };
-    packet ctrl_enable = {
-        uint8_t(0b00100000),
-        uint8_t(0b00000000)
-    };
 
-    sendData(ctrl_reset);
+    spi.transmit(ctrl_reset);
     setFrequency(0, 0);
     setFrequency(1, 0);
     setPhase(0, 0);
@@ -265,83 +140,5 @@ void device::init_dac()
 
     setOutput(output_waveform::sinusoid, 0);
 }
-
-void device::writeFSync(bool high) {
-    uint8_t pin_state =
-        pins::sck |
-        (high ? pins::nfsync : 0);
-    sendCommand({
-        opcodes::set_low_bits,
-        pin_state,
-        uint8_t(pins::sck | pins::sdata | pins::nfsync)
-    });
-}
-
-void device::sendCommand(const packet& p)
-{
-    if (ftdi_write_data(ctxt, const_cast<uint8_t*>(p.buffer), p.size) != p.size) {
-        onFtdiError(WHEN("ftdi_write_data"));
-    }
-}
-
-void device::sendData(const packet& payload)
-{
-    if (payload.size < 1) {
-        onLogicalError(WHEN("can't send a packet with <1 bytes."));
-    }
-
-    packet p;
-    p.append(fsyncPacket(false));
-    p.append({ opcodes::write, uint16_t(payload.size - 1) });
-    p.append(payload);
-    p.append(fsyncPacket(true));
-    sendCommand(p);
-}
-
-
-void device::onFtdiError(const std::string& when)
-{
-    auto exn = format_error(when, ctxt);
-
-    if (!init_done) {
-        ftdi_free(ctxt);
-        ctxt = nullptr;
-    }
-    throw exn;
-}
-
-void device::onLogicalError(const std::string& what)
-{
-    auto exn = error(what);
-
-    if (!init_done) {
-        ftdi_free(ctxt);
-        ctxt = nullptr;
-    }
-    throw exn;
-}
-
-void device::expectResponse(const packet& p)
-{
-    uint8_t buffer[p.size];
-    int rc = ftdi_read_data(ctxt, buffer, p.size);
-    if (rc != p.size) {
-        std::ostringstream what;
-        what << WHEN()
-             << "expected " << p.size << " byte reply but got "
-             << rc << " bytes.";
-        onLogicalError(what.str());
-    }
-
-    if (memcmp(p.buffer, buffer, p.size) != 0) {
-        onLogicalError(WHEN("did not receive expected reply"));
-    }
-}
-
-void device::expectEmptyResponse()
-{
-    expectResponse(packet { });
-}
-
 
 } /* namespace wavegen */
