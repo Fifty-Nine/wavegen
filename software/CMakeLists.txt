@@ -5,8 +5,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-find_package(FTDI REQUIRED)
+find_package(FTDI)
 include_directories(${LIBFTDI_INCLUDE_DIR})
+
+if (NOT LIBFTDI_FOUND)
+    find_package(FTD2XX REQUIRED)
+endif()
 
 add_subdirectory(wavegen)
 add_subdirectory(wavegen-test)
