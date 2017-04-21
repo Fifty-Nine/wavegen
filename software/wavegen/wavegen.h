@@ -70,14 +70,6 @@ private:
     uint32_t mclk_freq;
 };
 
-class wavegen_error : public std::runtime_error
-{
-public:
-    wavegen_error(const std::string& what) :
-        std::runtime_error(what)
-    { }
-};
-
 } /* namespace wavegen */
 
 #endif /* WAVEGEN_H */

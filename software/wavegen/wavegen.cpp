@@ -25,6 +25,7 @@
 #include <utility>
 
 #include "ad9837.h"
+#include "exceptions.h"
 #include "util.h"
 #include <ftdi.h>
 
@@ -81,12 +82,12 @@ enum class opcodes : uint8_t {
 constexpr uint8_t bad_opcode_reply = 0xfa;
 constexpr uint16_t spi_clkdiv = 0x05db; /* 1 MHz */
 
-static wavegen_error format_error(
+static error format_error(
     std::string when, ftdi_context *ctxt)
 {
     when += ": ";
     when += ftdi_get_error_string(ctxt);
-    return wavegen_error(when);
+    return error(when);
 }
 
 template<size_t Size>
@@ -126,7 +127,7 @@ struct wavegen::detail::packet
 
     void append(const packet& p) {
         if (p.size + size > sizeof(buffer)) {
-            throw wavegen_error(WHEN("overflowed buffer constructing packet."));
+            throw error(WHEN("overflowed buffer constructing packet."));
         }
         memcpy(&buffer[size], p.buffer, p.size);
         size += p.size;
@@ -364,7 +365,7 @@ void device::onFtdiError(const std::string& when)
 
 void device::onLogicalError(const std::string& what)
 {
-    auto exn = wavegen_error(what);
+    auto exn = error(what);
 
     if (!init_done) {
         ftdi_free(ctxt);
