@@ -19,6 +19,11 @@ if (LIBFTDI_FOUND)
         ${wavegen_SOURCE_FILES}
         ft2232h-spi-libftdi.cpp
     )
+else()
+    set(wavegen_SOURCE_FILES
+        ${wavegen_SOURCE_FILES}
+        ft2232h-spi-d2xx.cpp
+    )
 endif()
 
 add_library(wavegen ${wavegen_SOURCE_FILES})
