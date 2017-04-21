@@ -28,7 +28,6 @@
 #include "exceptions.h"
 #include "packet.h"
 #include "util.h"
-#include <ftdi.h>
 
 namespace wavegen {
 

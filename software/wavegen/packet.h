@@ -26,7 +26,7 @@ struct packet
 {
     template<class... Args>
     packet(Args&&... args) :
-        size(detail::pack(buffer, std::forward<Args>(args)...))
+    size { (uint8_t)detail::pack(buffer, std::forward<Args>(args)...) }
     { }
 
     void append(const packet& p);

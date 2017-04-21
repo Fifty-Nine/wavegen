@@ -1,0 +1,10 @@
+if (LIBMPSSE_SPI_INCLUDE_DIR AND LIBD2XX_LIBRARIES)
+  set (LIBMPSSE_SPI_FOUND TRUE)
+else ()
+  find_path(LIBMPSSE_SPI_INCLUDE_DIR MPSSE_SPI.h)
+  find_library(LIBMPSSE_SPI_LIBRARIES NAMES MPSSE_SPI)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(
+      LIBMPSSE_SPI DEFAULT_MSG LIBMPSSE_SPI_LIBRARIES LIBMPSSE_SPI_INCLUDE_DIR
+  )
+endif()

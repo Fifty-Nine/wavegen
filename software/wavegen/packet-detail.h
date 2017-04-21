@@ -22,7 +22,8 @@
 #include <type_traits>
 #include <utility>
 
-namespace wavegen::detail {
+namespace wavegen {
+namespace detail {
 
 template<size_t Size>
 size_t pack_impl(uint8_t *buffer)
@@ -51,6 +52,7 @@ size_t pack(uint8_t (&buffer)[Size], Args&&... args)
     return pack_impl<Size>(buffer, std::forward<Args>(args)...);
 }
 
-} /* namespace wavegen::detail */
+} /* namespace detail */
+} /* namespace wavegen */
 
 #endif /* WAVEGEN_PACKET_DETAIL_H */

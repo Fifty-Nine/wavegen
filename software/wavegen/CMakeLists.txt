@@ -22,7 +22,7 @@ if (LIBFTDI_FOUND)
 else()
     set(wavegen_SOURCE_FILES
         ${wavegen_SOURCE_FILES}
-        ft2232h-spi-d2xx.cpp
+        ft2232h-spi-libmpsse-spi.cpp
     )
 endif()
 
@@ -31,7 +31,11 @@ add_library(wavegen ${wavegen_SOURCE_FILES})
 set_target_properties(wavegen
                       PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(wavegen ftdi)
+if (LIBFTDI_FOUND)
+    target_link_libraries(wavegen ftdi)
+else()
+	target_link_libraries(wavegen libmpsse)
+endif()
 
 set(wavegen_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}
     CACHE INTERNAL "wavegen: Include Directories" FORCE)
