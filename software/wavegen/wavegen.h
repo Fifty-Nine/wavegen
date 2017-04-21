@@ -25,8 +25,7 @@ struct ftdi_context;
 
 namespace wavegen {
 
-namespace detail { struct packet; }
-
+struct packet;
 using channel_id = uint8_t;
 
 enum class output_waveform
@@ -58,11 +57,11 @@ private:
     void init_dac();
 
     void writeFSync(bool high);
-    void sendCommand(const detail::packet& p);
-    void sendData(const detail::packet& p);
+    void sendCommand(const packet& p);
+    void sendData(const packet& p);
     void onFtdiError(const std::string& when);
     void onLogicalError(const std::string& what);
-    void expectResponse(const detail::packet& p);
+    void expectResponse(const packet& p);
     void expectEmptyResponse();
 
     struct ftdi_context *ctxt;

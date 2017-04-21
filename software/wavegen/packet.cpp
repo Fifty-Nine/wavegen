@@ -1,4 +1,4 @@
-/* exceptions.h
+/* packet.cpp
  * Copyright (C) 2017 Tim Prince
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,25 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef WAVEGEN_EXCEPTIONS_H
-#define WAVEGEN_EXCEPTIONS_H
 
-#include <stdexcept>
+#include "packet.h"
 
-namespace wavegen {
+#include "exceptions.h"
 
-#define XSTR(str) #str
-#define STR(str) XSTR(str)
-#define WHEN(str) __FILE__ ":" STR(__LINE__) ": " str
-
-class error : public std::runtime_error
+void wavegen::packet::append(const packet& p)
 {
-public:
-    error(const std::string& what) :
-        std::runtime_error(what)
-    { }
-};
-
-} /* namespace wavegen */
-
-#endif /* WAVEGEN_EXCEPTIONS_H */
+    if (p.size + size > sizeof(buffer)) {
+        throw error(WHEN("overflowed buffer constructing packet."));
+    }
+    memcpy(&buffer[size], p.buffer, p.size);
+    size += p.size;
+}

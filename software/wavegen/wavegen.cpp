@@ -26,12 +26,9 @@
 
 #include "ad9837.h"
 #include "exceptions.h"
+#include "packet.h"
 #include "util.h"
 #include <ftdi.h>
-
-#define XSTR(str) #str
-#define STR(str) XSTR(str)
-#define WHEN(str) __FILE__ ":" STR(__LINE__) ": " str
 
 namespace wavegen {
 
@@ -89,56 +86,6 @@ static error format_error(
     when += ftdi_get_error_string(ctxt);
     return error(when);
 }
-
-template<size_t Size>
-size_t pack_impl(uint8_t *buffer)
-{
-    return 0;
-}
-
-template<size_t Size, class T, class... Args>
-size_t pack_impl(uint8_t *buffer, T&& arg, Args&&... args) {
-    static_assert(
-        std::is_pod<std::remove_reference<T>>(),
-        "Cannot pack a non-POD into a buffer."
-    );
-    static_assert(sizeof(T) < Size, "Buffer overflow when expanding a pack.");
-
-    memcpy(buffer, &arg, sizeof(T));
-    return sizeof(T) + pack_impl<Size - sizeof(T)>(
-        buffer + sizeof(T), std::forward<Args>(args)...
-    );
-}
-
-template<size_t Size, class... Args>
-size_t pack(uint8_t (&buffer)[Size], Args&&... args) {
-    return pack_impl<Size>(buffer, std::forward<Args>(args)...);
-}
-
-} /* namespace */
-
-struct wavegen::detail::packet
-{
-    template<class... Args>
-    packet(Args&&... args)
-    {
-        size = pack(buffer, std::forward<Args>(args)...);
-    }
-
-    void append(const packet& p) {
-        if (p.size + size > sizeof(buffer)) {
-            throw error(WHEN("overflowed buffer constructing packet."));
-        }
-        memcpy(&buffer[size], p.buffer, p.size);
-        size += p.size;
-    }
-
-    uint8_t buffer[16];
-    uint8_t size = 0;
-};
-using wavegen::detail::packet;
-
-namespace {
 
 packet fsyncPacket(bool fsyncHigh)
 {

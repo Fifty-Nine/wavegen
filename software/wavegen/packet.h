@@ -1,4 +1,4 @@
-/* exceptions.h
+/* packet.h
  * Copyright (C) 2017 Tim Prince
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,25 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef WAVEGEN_EXCEPTIONS_H
-#define WAVEGEN_EXCEPTIONS_H
+#ifndef WAVEGEN_PACKET_H
+#define WAVEGEN_PACKET_H
 
-#include <stdexcept>
+#include "packet-detail.h"
 
-namespace wavegen {
-
-#define XSTR(str) #str
-#define STR(str) XSTR(str)
-#define WHEN(str) __FILE__ ":" STR(__LINE__) ": " str
-
-class error : public std::runtime_error
+namespace wavegen
 {
-public:
-    error(const std::string& what) :
-        std::runtime_error(what)
+
+struct packet
+{
+    template<class... Args>
+    packet(Args&&... args) :
+        size(detail::pack(buffer, std::forward<Args>(args)...))
     { }
+
+    void append(const packet& p);
+
+    uint8_t buffer[16];
+    uint8_t size = 0;
 };
+
 
 } /* namespace wavegen */
 
-#endif /* WAVEGEN_EXCEPTIONS_H */
+#endif /* WAVEGEN_PACKET_H */
