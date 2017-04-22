@@ -7,4 +7,8 @@ else ()
   find_package_handle_standard_args(
       LIBMPSSE_SPI DEFAULT_MSG LIBMPSSE_SPI_LIBRARIES LIBMPSSE_SPI_INCLUDE_DIR
   )
+
+  if (LIBMPSSE_SPI_FOUND AND MSVC_VERSION GREATER 1800)
+    set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} legacy_stdio_definitions.lib)
+  endif()
 endif()
