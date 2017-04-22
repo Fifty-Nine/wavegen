@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name WG)(type KiCad)(uri C:/Users/princet/Documents/waveform-generator/hardware/rev2/WG.pretty)(options "")(descr ""))
+)

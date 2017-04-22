@@ -1,0 +1,50 @@
+* C:\Users\princet\Documents\waveform-generator\hardware\rev3\rev3.cir
+
+* EESchema Netlist Version 1.1 (Spice format) creation date: 4/21/2017 11:30:36 PM
+
+* To exclude a component from the Spice Netlist add [Spice_Netlist_Enabled] user FIELD set to: N
+* To reorder the component spice node sequence add [Spice_Node_Sequence] user FIELD and define sequence: 2,1,0
+
+* Sheet Name: /
+* Sheet Name: /Power/
+U1  GNDD +3V3 Net-_C5-Pad1_ LD1117S33TR		
+TP1  Net-_C5-Pad1_ VBUS		
+C5  Net-_C5-Pad1_ GNDD 100n		
+C6  +3V3 GNDD 100u		
+TP3  +3V3 +3.3V		
+J1  Net-_C5-Pad1_ USB_D- USB_D+ GNDD ? USB_B		
+TP2  GNDD GND		
+L1  +3V3 FTVPHY 800m		
+C1  FTVPHY GNDD 4.7u		
+C2  FTVPHY GNDD 100n		
+L2  +3V3 FTVPLL 800m		
+C3  FTVPLL GNDD 4.7u		
+C4  FTVPLL GNDD 100n		
+R1  +3V3 Net-_D1-Pad2_ 470		
+D1  GNDD Net-_D1-Pad2_ Green		
+* Sheet Name: /FTDI/
+U2  FTEECS FTEECLK FTEEDATA Net-_R4-Pad2_ GNDD ? ? +3V3 93LCxxB		
+R2  +3V3 FTEECLK 10k		
+R3  +3V3 FTEECS 10k		
+R5  +3V3 FTEEDATA 10k		
+R4  FTEEDATA Net-_R4-Pad2_ 2.2k		
+U3  GNDD FTOSC- FTOSC+ FTVPHY GNDD /FTDI/REF USB_D- USB_D+ FTVPLL GNDD GNDD /FTDI/VREGOUT GNDD /FTDI/nRESET GNDD /Connectors/ADBUS0 /Connectors/ADBUS1 /Connectors/ADBUS2 /Connectors/ADBUS3 +3V3 /Connectors/ADBUS4 /Connectors/ADBUS5 /Connectors/ADBUS6 /Connectors/ADBUS7 GNDD /Connectors/ACBUS0 /Connectors/ACBUS1 /Connectors/ACBUS2 /Connectors/ACBUS3 /Connectors/ACBUS4 +3V3 /Connectors/ACBUS5 /Connectors/ACBUS6 /Connectors/ACBUS7 GNDD ? /FTDI/VREGOUT /Connectors/BDBUS0 /Connectors/BDBUS1 /Connectors/BDBUS2 /Connectors/BDBUS3 +3V3 /Connectors/BDBUS4 /Connectors/BDBUS5 /Connectors/BDBUS6 /Connectors/BDBUS7 GNDD /Connectors/BCBUS0 /FTDI/VREGOUT +3V3 GNDD /Connectors/BCBUS1 /Connectors/BCBUS2 /Connectors/BCBUS3 /Connectors/BCBUS4 +3V3 /Connectors/BCBUS5 /Connectors/BCBUS6 /Connectors/BCBUS7 ? FTEEDATA FTEECLK FTEECS /FTDI/VREGOUT FT2232H		
+C10  /FTDI/VREGOUT GNDD 100n		
+C11  /FTDI/VREGOUT GNDD 100n		
+C12  /FTDI/VREGOUT GNDD 100n		
+C13  /FTDI/VREGOUT GNDD 100n		
+C14  /FTDI/VREGOUT GNDD 100n		
+C15  /FTDI/VREGOUT GNDD 100n		
+C16  /FTDI/VREGOUT GNDD 100n		
+C9  /FTDI/VREGOUT GNDD 3.3u		
+C17  +3V3 GNDD 100n		
+R6  +3V3 /FTDI/nRESET 1k		
+R7  GNDD /FTDI/REF 12k		
+Y1  FTOSC+ FTOSC- 12MHz		
+C7  FTOSC+ GNDD 27p		
+C8  FTOSC- GNDD 27p		
+* Sheet Name: /Connectors/
+J2  +3V3 GNDD /Connectors/ADBUS0 /Connectors/ACBUS0 /Connectors/ADBUS1 /Connectors/ACBUS1 /Connectors/ADBUS2 /Connectors/ACBUS2 /Connectors/ADBUS3 /Connectors/ACBUS3 /Connectors/ADBUS4 /Connectors/ACBUS4 /Connectors/ADBUS5 /Connectors/ACBUS5 /Connectors/ADBUS6 /Connectors/ACBUS6 /Connectors/ADBUS7 /Connectors/ACBUS7 CONN_02X09		
+J3  +3V3 GNDD /Connectors/BDBUS0 /Connectors/BCBUS0 /Connectors/BDBUS1 /Connectors/BCBUS1 /Connectors/BDBUS2 /Connectors/BCBUS2 /Connectors/BDBUS3 /Connectors/BCBUS3 /Connectors/BDBUS4 /Connectors/BCBUS4 /Connectors/BDBUS5 /Connectors/BCBUS5 /Connectors/BDBUS6 /Connectors/BCBUS6 /Connectors/BDBUS7 /Connectors/BCBUS7 CONN_02X09		
+
+.end
