@@ -20,7 +20,7 @@
 #include <cstdint>
 #include <string>
 
-#include "ft2232h-spi.h"
+#include "wavegen/ft2232h-spi.h"
 
 struct ftdi_context;
 

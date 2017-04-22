@@ -19,7 +19,7 @@
 
 #include <memory>
 
-#include "exceptions.h"
+#include "wavegen/exceptions.h"
 
 namespace wavegen
 {
