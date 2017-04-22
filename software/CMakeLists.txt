@@ -25,6 +25,7 @@ add_subdirectory(wavegen)
 add_subdirectory(wavegen-test)
 
 if (Boost_PYTHON_FOUND)
+    find_package(PythonInterp)
     find_package(PythonLibs)
 
     if (PythonLibs_FOUND)
