@@ -29,12 +29,15 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:ftdi
+LIBS:analog_devices
+LIBS:AD9102
+LIBS:LMK61XX
 LIBS:rev3-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 1 5
 Title ""
 Date ""
 Rev ""
@@ -78,4 +81,10 @@ Wire Bus Line
 	2300 1000 2400 1000
 Wire Bus Line
 	2400 1100 2300 1100
+$Sheet
+S 1550 1600 750  600 
+U 58FBEC6E
+F0 "Analog" 60
+F1 "analog.sch" 60
+$EndSheet
 $EndSCHEMATC

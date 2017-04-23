@@ -29,12 +29,15 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:ftdi
+LIBS:analog_devices
+LIBS:AD9102
+LIBS:LMK61XX
 LIBS:rev3-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 4
+Sheet 3 5
 Title ""
 Date ""
 Rev ""
@@ -306,7 +309,7 @@ L R_Small R6
 U 1 1 58FB0FD6
 P 3100 3750
 F 0 "R6" H 3130 3770 50  0000 L CNN
-F 1 "1k" H 3130 3710 50  0000 L CNN
+F 1 "4.7k" H 3130 3710 50  0000 L CNN
 F 2 "Resistors_SMD:R_0805" H 3100 3750 50  0001 C CNN
 F 3 "" H 3100 3750 50  0001 C CNN
 F 4 "P1.0KADCT-ND" H 3100 3750 60  0001 C CNN "DigiKey "
@@ -575,7 +578,7 @@ Wire Wire Line
 	5300 6550 5300 6450
 Connection ~ 5200 6550
 Wire Bus Line
-	6650 2450 6650 3150
+	7600 2450 7600 3150
 Wire Bus Line
 	6650 3350 6650 4050
 Entry Wire Line
@@ -611,37 +614,37 @@ Wire Wire Line
 Wire Wire Line
 	6550 3250 6200 3250
 Entry Wire Line
-	6550 3050 6650 3150
+	7500 3050 7600 3150
 Entry Wire Line
-	6550 2950 6650 3050
+	7500 2950 7600 3050
 Entry Wire Line
-	6550 2850 6650 2950
+	7500 2850 7600 2950
 Entry Wire Line
-	6550 2750 6650 2850
+	7500 2750 7600 2850
 Entry Wire Line
-	6550 2650 6650 2750
+	7500 2650 7600 2750
 Entry Wire Line
-	6550 2550 6650 2650
+	7500 2550 7600 2650
 Entry Wire Line
-	6550 2450 6650 2550
+	7500 2450 7600 2550
 Entry Wire Line
-	6550 2350 6650 2450
+	7500 2350 7600 2450
 Wire Wire Line
-	6200 2350 6550 2350
+	6200 2350 7500 2350
 Wire Wire Line
-	6550 2450 6200 2450
+	6200 2450 7500 2450
 Wire Wire Line
-	6200 2550 6550 2550
+	6200 2550 7500 2550
 Wire Wire Line
-	6550 2650 6200 2650
+	6200 2650 7500 2650
 Wire Wire Line
-	6200 2750 6550 2750
+	6200 2750 7500 2750
 Wire Wire Line
-	6550 2850 6200 2850
+	6200 2850 7500 2850
 Wire Wire Line
-	6200 2950 6550 2950
+	6200 2950 7500 2950
 Wire Wire Line
-	6550 3050 6200 3050
+	6200 3050 7500 3050
 Wire Bus Line
 	6650 4250 6650 4950
 Wire Bus Line
@@ -802,7 +805,7 @@ Text Label 6200 2950 0    60   ~ 0
 ADBUS6
 Text Label 6200 3050 0    60   ~ 0
 ADBUS7
-Text HLabel 6650 2450 2    60   Input ~ 0
+Text HLabel 7600 2450 2    60   Input ~ 0
 ADBUS[7..0]
 Text HLabel 6650 3350 2    60   Input ~ 0
 ACBUS[7..0]
@@ -858,4 +861,34 @@ Text Label 6200 5650 0    60   ~ 0
 BCBUS6
 Text Label 6200 5750 0    60   ~ 0
 BCBUS7
+Text GLabel 6650 2200 1    60   Input ~ 0
+SPI_CLK
+Text GLabel 6800 2200 1    60   Input ~ 0
+SPI_DO
+Text GLabel 6950 2200 1    60   Input ~ 0
+SPI_DI
+Text GLabel 7100 2200 1    60   Input ~ 0
+SPI_CS
+Wire Wire Line
+	6650 2200 6650 2350
+Connection ~ 6650 2350
+Wire Wire Line
+	6800 2200 6800 2450
+Connection ~ 6800 2450
+Wire Wire Line
+	6950 2200 6950 2550
+Connection ~ 6950 2550
+Wire Wire Line
+	7100 2200 7100 2650
+Connection ~ 7100 2650
+Text GLabel 7250 2200 1    60   Input ~ 0
+RESET
+Wire Wire Line
+	7250 2200 7250 2750
+Connection ~ 7250 2750
+Text GLabel 7400 2200 1    60   Input ~ 0
+TRIGGER
+Wire Wire Line
+	7400 2200 7400 2850
+Connection ~ 7400 2850
 $EndSCHEMATC

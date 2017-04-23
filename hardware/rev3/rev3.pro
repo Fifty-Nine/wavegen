@@ -1,4 +1,4 @@
-update=4/21/2017 9:20:10 PM
+update=4/22/2017 6:45:30 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,3 +59,6 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=ftdi
+LibName31=analog_devices
+LibName32=AD9102
+LibName33=LMK61XX
