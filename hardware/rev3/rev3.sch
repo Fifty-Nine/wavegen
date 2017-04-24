@@ -3,7 +3,6 @@ LIBS:power
 LIBS:device
 LIBS:transistors
 LIBS:conn
-LIBS:linear
 LIBS:regul
 LIBS:74xx
 LIBS:cmos4000
@@ -32,6 +31,8 @@ LIBS:ftdi
 LIBS:analog_devices
 LIBS:AD9102
 LIBS:LMK61XX
+LIBS:linear
+LIBS:ltc6409
 LIBS:rev3-cache
 EELAYER 25 0
 EELAYER END

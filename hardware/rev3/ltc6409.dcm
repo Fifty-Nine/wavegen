@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LTC6409
+D Precision differential amplifier for dirving high resolution SAR ADCs
+K linear ltc diff amp
+F http://cds.linear.com/docs/en/datasheet/6362fa.pdf
+$ENDCMP
+#
+#End Doc Library
