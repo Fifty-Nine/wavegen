@@ -33,6 +33,15 @@ std::shared_ptr<device> getDevice()
     return global_device;
 }
 
+void freeDevice(std::shared_ptr<device>& dev)
+{
+    dev.reset();
+
+    if (global_device.use_count() == 1) {
+        global_device.reset();
+    }
+}
+
 BOOST_PYTHON_MODULE(pywavegen)
 {
     class_<
@@ -41,6 +50,7 @@ BOOST_PYTHON_MODULE(pywavegen)
         boost::noncopyable
     >("device", boost::python::no_init)
         .def("__init__", make_constructor(&getDevice))
+        .def("__del__", make_function(&freeDevice))
         .def("set_clock_frequency", &device::setClockFrequency)
         .def("set_frequency", &device::setFrequency)
         .def("set_phase", &device::setPhase)
