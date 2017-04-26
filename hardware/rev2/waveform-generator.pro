@@ -1,4 +1,4 @@
-update=4/3/2017 7:27:31 PM
+update=4/24/2017 10:29:00 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -61,3 +61,13 @@ LibName29=valves
 LibName30=ftdi
 LibName31=analog_devices
 LibName32=C:/Users/princet/Downloads/AD9837
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
