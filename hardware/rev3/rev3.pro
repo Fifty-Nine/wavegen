@@ -1,4 +1,4 @@
-update=4/23/2017 6:38:28 PM
+update=4/26/2017 7:12:24 PM
 version=1
 last_client=kicad
 [pcbnew]
@@ -63,3 +63,4 @@ LibName31=AD9102
 LibName32=LMK61XX
 LibName33=linear
 LibName34=ltc6409
+LibName35=ltc6269
