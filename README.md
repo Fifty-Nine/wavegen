@@ -3,7 +3,9 @@ Introduction
 
 This is an implementation of a USB-controlled Analog Devices AD9837-based 
 function generator that can generate sine, triangle and square waves up to 
-around 200 kHz or so.
+around 200 kHz or so, 1 MHz if the output filtering capacitor is removed
+(although the quantization of the ADC starts to become apparent around
+500 kHz).
 
 ![Fully assembled Rev. 2 board](https://raw.githubusercontent.com/Fifty-Nine/wavegen/gh-pages/images/rev2-board.jpg)
 
@@ -83,14 +85,10 @@ frequency sweep.
 Future Work
 ===========
 
-A GUI control interface would be nice to have. Python bindings, too.
+A GUI control interface would be nice to have. 
 
 One major limitation of the current hardware is that it provides no output
 amplitude control or amplification. At some point I would like to design
-an amplification stage with automatic gain control.
-
-Another idea would be to split the function generator portion of the design
-into a separate board that would stack onto the main USB interface board. This
-would essentially make the main board an FT2232H breakout board with a modular
-interface.
+an amplification stage with automatic gain control. Rev 3 will allow
+arbitrary waveform generation, so this will be mitigated somewhat.
 
