@@ -1400,4 +1400,6 @@ F 3 "" H 8900 4400 50  0001 C CNN
 	1    8900 4400
 	1    0    0    -1  
 $EndComp
+Text Label 9125 3755 3    60   ~ 0
++1.65V
 $EndSCHEMATC
