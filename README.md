@@ -5,7 +5,7 @@ This is an implementation of a USB-controlled Analog Devices AD9837-based
 function generator that can generate sine, triangle and square waves up to 
 around 200 kHz or so.
 
-![Fully assembled Rev. 1 board](https://raw.githubusercontent.com/Fifty-Nine/wavegen/gh-pages/images/rev1-board.jpg)
+![Fully assembled Rev. 2 board](https://raw.githubusercontent.com/Fifty-Nine/wavegen/gh-pages/images/rev2-board.jpg)
 
 ![Sample output](https://raw.githubusercontent.com/Fifty-Nine/wavegen/gh-pages/images/1khz_sinusoid.png)
 
