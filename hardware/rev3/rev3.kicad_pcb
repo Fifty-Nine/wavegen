@@ -3,9 +3,9 @@
   (general
     (links 544)
     (no_connects 0)
-    (area 115.150714 30.41 184.569286 119.656001)
+    (area 121.844999 32.944999 177.875001 109.295001)
     (thickness 1.6)
-    (drawings 16)
+    (drawings 17)
     (tracks 1019)
     (zones 0)
     (modules 289)
@@ -4378,11 +4378,11 @@
   )
 
   (module footprints:oshw (layer F.Cu) (tedit 0) (tstamp 59080333)
-    (at 136.144 45.974)
-    (fp_text reference G*** (at 0 0) (layer F.SilkS) hide
+    (at 168.021 89.789 90)
+    (fp_text reference G*** (at 0 0 90) (layer F.SilkS) hide
       (effects (font (thickness 0.3)))
     )
-    (fp_text value LOGO (at 0.75 0) (layer F.SilkS) hide
+    (fp_text value LOGO (at 0.75 0 90) (layer F.SilkS) hide
       (effects (font (thickness 0.3)))
     )
     (fp_poly (pts (xy -3.247962 2.471678) (xy -3.173547 2.504764) (xy -3.109752 2.553719) (xy -3.060672 2.617347)
@@ -7328,6 +7328,9 @@
       (net 41 GNDA) (zone_connect 2))
   )
 
+  (gr_text github.com:Fifty-Nine/wavegen (at 175.387 90.17 90) (layer F.SilkS)
+    (effects (font (size 0.762 0.762) (thickness 0.1)))
+  )
   (gr_text VBUS (at 171.45 50.546) (layer F.SilkS)
     (effects (font (size 1.016 1.016) (thickness 0.127)))
   )
@@ -7337,8 +7340,8 @@
   (gr_text +3.3V (at 171.069 43.18) (layer F.SilkS)
     (effects (font (size 1.016 1.016) (thickness 0.127)))
   )
-  (gr_text "Wavegen Rev. 3" (at 135.943987 40.132) (layer F.SilkS)
-    (effects (font (size 0.762 0.762) (thickness 0.127)))
+  (gr_text "Wavegen Rev. 3" (at 174.117 89.789 90) (layer F.SilkS)
+    (effects (font (size 0.762 0.762) (thickness 0.1)))
   )
   (gr_text TRIGGER (at 127.7366 86.2076) (layer F.SilkS)
     (effects (font (size 1.016 1.016) (thickness 0.254)))
