@@ -44,6 +44,7 @@ void freeDevice(std::shared_ptr<device>& dev)
 
 BOOST_PYTHON_MODULE(pywavegen)
 {
+    scope().attr("library_version") = getLibraryVersion();
     class_<
         device,
         std::shared_ptr<device>,

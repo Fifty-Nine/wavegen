@@ -60,6 +60,8 @@ private:
     uint32_t mclk_freq;
 };
 
+std::string getLibraryVersion();
+
 } /* namespace wavegen */
 
 #endif /* WAVEGEN_H */
