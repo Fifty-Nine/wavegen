@@ -52,7 +52,7 @@ struct spi::impl
     }
 
     packet csPacket(bool cs_high);
-    void init(int vid, int pid, const char *descr, const char *serial);
+    void init(const endpoint& ep);
     void sendRaw(const packet& p);
     void sync();
     void expectResponse(const packet& p);
@@ -68,12 +68,11 @@ spi::~spi()
 }
 
 spi::spi(
-    pins cs, int vid, int pid,
-    const char *descr, const char *serial)
+    pins cs, const endpoint& ep)
     noexcept(false) :
     d(new impl { cs })
 {
-    d->init(vid, pid, descr, serial);
+    d->init(ep);
 }
 
 spi::spi(spi&& other) noexcept(true)
@@ -121,15 +120,16 @@ packet spi::impl::csPacket(bool cs_high)
     };
 }
 
-void spi::impl::init(
-    int vid, int pid,
-    const char *descr, const char *serial)
+void spi::impl::init(const endpoint& ep)
 {
     if (ftdi_set_interface(ctxt, INTERFACE_A)) {
         onError(WHEN("ftdi_set_interface"));
     }
 
-    if (ftdi_usb_open_desc(ctxt, vid, pid, descr, serial)) {
+    auto descr = ep.description.empty() ? nullptr : ep.description.c_str();
+    auto serial = ep.serial.empty() ? nullptr : ep.serial.c_str();
+
+    if (ftdi_usb_open_desc(ctxt, ep.vid, ep.pid, descr, serial)) {
         onError(WHEN("ftdi_usb_open_desc"));
     }
 
@@ -210,4 +210,50 @@ void spi::impl::onError(const std::string& when)
 }
 
 } /* namespace ftdi */
+
+std::vector<ftdi::endpoint> ftdi::getAvailableEndpoints(int vid, int pid)
+{
+    auto ctxt = getContext();
+    ftdi_device_list *devlist = nullptr;
+    auto rc = ftdi_usb_find_all(ctxt, &devlist, vid, pid);
+
+    if (rc < 0) {
+        throw ftdi::error {
+            std::string { WHEN("getAvailableEndpoints: ") } + ftdi_get_error_string(ctxt)
+        };
+    }
+
+    scope_guard guard { [devlist]() { ftdi_list_free2(devlist); } };
+
+    std::vector<ftdi::endpoint> result;
+    result.reserve(rc);
+
+    std::array<char, 32> mfg_buff;
+    std::array<char, 32> descr_buff;
+    std::array<char, 32> serial_buff;
+
+    auto curr_dev = devlist;
+    for (int i = 0; i < rc; ++i, curr_dev = curr_dev->next) {
+        if (ftdi_usb_get_strings(
+            ctxt, curr_dev->dev,
+            mfg_buff.data(), mfg_buff.size(),
+            descr_buff.data(), descr_buff.size(),
+            serial_buff.data(), serial_buff.size()))
+        {
+            throw ftdi::error {
+                std::string { WHEN("ftdi_usb_get_strings2: ") } + ftdi_get_error_string(ctxt)
+            };
+        }
+
+        result.emplace_back(
+            vid, pid,
+            std::string { mfg_buff.data() },
+            std::string { descr_buff.data() },
+            std::string { serial_buff.data() }
+        );
+    }
+    return result;
+}
+
 } /* namespace wavegen */
+

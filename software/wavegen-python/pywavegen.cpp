@@ -16,6 +16,7 @@
  */
 
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <memory>
 
 #include "wavegen.h"
@@ -23,23 +24,11 @@
 using namespace wavegen;
 using namespace boost::python;
 
-static std::shared_ptr<device> global_device;
 
-std::shared_ptr<device> getDevice()
+boost::python::list enumerateAsPyList()
 {
-    if (!global_device) {
-        global_device = std::make_shared<device>();
-    }
-    return global_device;
-}
-
-void freeDevice(std::shared_ptr<device>& dev)
-{
-    dev.reset();
-
-    if (global_device.use_count() == 1) {
-        global_device.reset();
-    }
+    auto devs = enumerateDevices();
+    return list { iterator<std::vector<std::string>> { } (devs) };
 }
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(device_overloads, setOutput, 1, 2)
@@ -47,13 +36,18 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(device_overloads, setOutput, 1, 2)
 BOOST_PYTHON_MODULE(pywavegen)
 {
     scope().attr("library_version") = getLibraryVersion();
+    def("enumerate_devices", &enumerateAsPyList);
+    class_<
+        std::vector<std::string>
+    >("vector_string")
+        .def(vector_indexing_suite<std::vector<std::string>>())
+    ;
     class_<
         device,
         std::shared_ptr<device>,
         boost::noncopyable
-    >("device", boost::python::no_init)
-        .def("__init__", make_constructor(&getDevice))
-        .def("__del__", make_function(&freeDevice))
+    >("device", init<>())
+        .def(init<std::string>())
         .def("set_clock_frequency", &device::setClockFrequency)
         .def("set_frequency", &device::setFrequency)
         .def("set_phase", &device::setPhase)

@@ -18,6 +18,7 @@
 #define WAVEGEN_UTIL_H
 
 #include <cstddef>
+#include <functional>
 #include <type_traits>
 
 namespace wavegen
@@ -55,6 +56,24 @@ constexpr T mask(T bits)
 {
     static_assert(std::is_integral<T>(), "Expected an integral type.");
     return (T(1) << bits) - T(1);
+}
+
+class scope_guard
+{
+public:
+    scope_guard(std::function<void()> fn) :
+        fn(fn)
+    { }
+    ~scope_guard() { fn(); }
+
+private:
+    std::function<void()> fn;
+};
+
+template<class T>
+bool equal_or_defaulted(const T& l, const T& r)
+{
+    return (l == T {}) || (r == T {}) || l == r;
 }
 
 } /* namespace wavegen */

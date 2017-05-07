@@ -19,6 +19,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "wavegen/ft2232h-spi.h"
 #include "wavegen/version.h"
@@ -29,6 +30,8 @@ namespace wavegen {
 
 struct packet;
 using channel_id = uint8_t;
+
+std::vector<std::string> enumerateDevices();
 
 enum class output_waveform
 {
@@ -42,7 +45,7 @@ class device final
 {
 public:
     ~device() noexcept(true);
-    device() noexcept(false);
+    device(const std::string& serial = "") noexcept(false);
     device(const device&) = delete;
     device(device&&) noexcept(true);
 

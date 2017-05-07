@@ -18,8 +18,10 @@
 #define WAVEGEN_FT2232H_SPI_H
 
 #include <memory>
+#include <vector>
 
 #include "wavegen/exceptions.h"
+#include "wavegen/util.h"
 
 namespace wavegen
 {
@@ -33,6 +35,40 @@ struct error : public wavegen::error
 public:
     error(const std::string& what) : wavegen::error(what) { }
 };
+
+struct endpoint
+{
+    int vid;
+    int pid;
+    std::string manufacturer;
+    std::string description;
+    std::string serial;
+
+    endpoint() = default;
+    endpoint(const endpoint&) = default;
+    endpoint(endpoint&&) = default;
+    endpoint(
+        int vid, int pid,
+        const std::string& manufacturer,
+        const std::string& description,
+        const std::string& serial) :
+            vid(vid),
+            pid(pid),
+            manufacturer(manufacturer),
+            description(description),
+            serial(serial)
+    { }
+
+    bool match(const endpoint& other) const {
+        return equal_or_defaulted(vid, other.vid) &&
+            equal_or_defaulted(pid, other.pid) &&
+            equal_or_defaulted(manufacturer, other.manufacturer) &&
+            equal_or_defaulted(description, other.description) &&
+            equal_or_defaulted(serial, other.serial);
+    }
+};
+
+std::vector<endpoint> getAvailableEndpoints(int vid, int pid);
 
 struct spi
 {
@@ -53,10 +89,7 @@ public:
 
     virtual ~spi() noexcept(true);
 
-    spi(
-        pins cs_pin, int vid, int pid,
-        const char *descr, const char *serial = nullptr
-    );
+    spi(pins cs_pin, const endpoint& ep);
     spi(const spi&) = delete;
     spi(spi&&) noexcept(true);
 

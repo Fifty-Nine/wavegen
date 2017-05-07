@@ -32,14 +32,19 @@
 namespace wavegen {
 
 namespace {
-
-constexpr int vid = 0x0403;
-constexpr int pid = 0x6010;
-
+    constexpr int vid = 0x0403;
+    constexpr int pid = 0x6010;
+    ftdi::endpoint getEndpoint(const std::string& serial = "") {
+        return ftdi::endpoint {
+            vid, pid,
+            /*mfg*/ "", /*desc*/ "USB Function Generator",
+            serial
+        };
+    }
 } /* namespace */
 
-device::device() :
-    spi { ftdi::spi::pins::adbus3, vid, pid, "USB Function Generator" },
+device::device(const std::string& serial) :
+    spi { ftdi::spi::pins::adbus3, getEndpoint(serial) },
     mclk_freq { ad9837::default_mclk_freq }
 {
     initDac();
@@ -141,3 +146,19 @@ void device::initDac()
 }
 
 } /* namespace wavegen */
+
+std::vector<std::string> wavegen::enumerateDevices()
+{
+    auto endpoints = ftdi::getAvailableEndpoints(vid, pid);
+    std::vector<std::string> result;
+    result.reserve(endpoints.size());
+
+    ftdi::endpoint expected = getEndpoint();
+
+    for (const auto& ep : endpoints) {
+        if (ep.match(expected)) {
+            result.push_back(ep.serial);
+        }
+    }
+    return result;
+}
