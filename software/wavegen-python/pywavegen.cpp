@@ -42,6 +42,8 @@ void freeDevice(std::shared_ptr<device>& dev)
     }
 }
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(device_overloads, setOutput, 1, 2)
+
 BOOST_PYTHON_MODULE(pywavegen)
 {
     scope().attr("library_version") = getLibraryVersion();
@@ -55,7 +57,7 @@ BOOST_PYTHON_MODULE(pywavegen)
         .def("set_clock_frequency", &device::setClockFrequency)
         .def("set_frequency", &device::setFrequency)
         .def("set_phase", &device::setPhase)
-        .def("set_output", &device::setOutput);
+        .def("set_output", &device::setOutput, device_overloads());
     ;
     enum_<output_waveform>("output_waveform")
         .value("sinusoid", output_waveform::sinusoid)

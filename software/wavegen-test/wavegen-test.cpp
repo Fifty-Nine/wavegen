@@ -28,7 +28,7 @@ void sweep(
 
         channel = !channel;
         printf("setOutput %d\n", channel);
-        dev.setOutput(ow, channel);
+        dev.setOutput(channel, ow);
         std::this_thread::sleep_for(std::chrono::microseconds(delay));
     }
 }

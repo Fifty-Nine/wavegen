@@ -52,7 +52,10 @@ public:
     void setClockFrequency(uint32_t freq);
     void setFrequency(channel_id channel, uint32_t freq);
     void setPhase(channel_id channel, uint16_t phase);
-    void setOutput(output_waveform type, channel_id channel);
+    void setOutput(
+        channel_id channel,
+        output_waveform type = output_waveform::sinusoid
+    );
 
 private:
     void initDac();

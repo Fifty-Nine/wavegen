@@ -99,7 +99,7 @@ void device::setPhase(channel_id channel, uint16_t phase)
     spi.transmit({byteswap(data)});
 }
 
-void device::setOutput(output_waveform type, channel_id channel)
+void device::setOutput(channel_id channel, output_waveform type)
 {
     using namespace ad9837;
     uint16_t command = reg_mask::control;
@@ -137,7 +137,7 @@ void device::initDac()
     setPhase(0, 0);
     setPhase(1, 0);
 
-    setOutput(output_waveform::sinusoid, 0);
+    setOutput(0);
 }
 
 } /* namespace wavegen */
