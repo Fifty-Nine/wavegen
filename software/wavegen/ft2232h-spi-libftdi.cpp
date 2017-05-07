@@ -24,13 +24,14 @@
 #include "util.h"
 
 namespace wavegen {
+namespace ftdi {
 
 namespace {
 constexpr uint16_t spi_clkdiv = 0x05db; /* 1 MHz */
 constexpr uint8_t bad_opcode_reply = 0xfa;
 }
 
-struct ft2232h_spi::impl
+struct spi::impl
 {
     impl(pins cs_pin) :
         ctxt(ftdi_new()),
@@ -53,11 +54,11 @@ struct ft2232h_spi::impl
     pins cs_pin;
 };
 
-ft2232h_spi::~ft2232h_spi()
+spi::~spi()
 {
 }
 
-ft2232h_spi::ft2232h_spi(
+spi::spi(
     pins cs, int vid, int pid,
     const char *descr, const char *serial)
     noexcept(false) :
@@ -66,18 +67,18 @@ ft2232h_spi::ft2232h_spi(
     d->init(vid, pid, descr, serial);
 }
 
-ft2232h_spi::ft2232h_spi(ft2232h_spi&& other) noexcept(true)
+spi::spi(spi&& other) noexcept(true)
     : d(std::move(other.d))
 {
 }
 
-ft2232h_spi& ft2232h_spi::operator=(ft2232h_spi&& other) noexcept(true)
+spi& spi::operator=(spi&& other) noexcept(true)
 {
     std::swap(d, other.d);
     return *this;
 }
 
-void ft2232h_spi::transmit(const packet& payload)
+void spi::transmit(const packet& payload)
 {
     if (payload.size < 1) {
         throw error(WHEN("can't send a packet with <1 bytes."));
@@ -92,17 +93,17 @@ void ft2232h_spi::transmit(const packet& payload)
     d->expectEmptyResponse();
 }
 
-void ft2232h_spi::impl::sendRaw(const packet& p)
+void spi::impl::sendRaw(const packet& p)
 {
     if (ftdi_write_data(ctxt, const_cast<uint8_t*>(p.buffer), p.size) != p.size) {
         onError(WHEN("ftdi_write_data"));
     }
 }
 
-packet ft2232h_spi::impl::csPacket(bool cs_high)
+packet spi::impl::csPacket(bool cs_high)
 {
     uint8_t pin_state =
-        ft2232h_spi::pins::sck |
+        spi::pins::sck |
         (cs_high ? cs_pin : 0);
     return {
         opcodes::set_low_bits,
@@ -111,7 +112,7 @@ packet ft2232h_spi::impl::csPacket(bool cs_high)
     };
 }
 
-void ft2232h_spi::impl::init(
+void spi::impl::init(
     int vid, int pid,
     const char *descr, const char *serial)
 {
@@ -155,7 +156,7 @@ void ft2232h_spi::impl::init(
     expectEmptyResponse();
 }
 
-void ft2232h_spi::impl::sync()
+void spi::impl::sync()
 {
     uint8_t buffer[2];
     sendRaw(opcodes::loopback_enable);
@@ -172,7 +173,7 @@ void ft2232h_spi::impl::sync()
     sendRaw(opcodes::loopback_disable);
 }
 
-void ft2232h_spi::impl::expectResponse(const packet& p)
+void spi::impl::expectResponse(const packet& p)
 {
     uint8_t buffer[p.size];
     int rc = ftdi_read_data(ctxt, buffer, p.size);
@@ -189,14 +190,15 @@ void ft2232h_spi::impl::expectResponse(const packet& p)
     }
 }
 
-void ft2232h_spi::impl::expectEmptyResponse()
+void spi::impl::expectEmptyResponse()
 {
     expectResponse(packet {});
 }
 
-void ft2232h_spi::impl::onError(const std::string& when)
+void spi::impl::onError(const std::string& when)
 {
-    throw ftdi_error(when + ": " + ftdi_get_error_string(ctxt));
+    throw error(when + ": " + ftdi_get_error_string(ctxt));
 }
 
+} /* namespace ftdi */
 } /* namespace wavegen */

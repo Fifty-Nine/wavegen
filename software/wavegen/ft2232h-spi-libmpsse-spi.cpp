@@ -28,8 +28,9 @@ extern "C" {
 #include "util.h"
 
 namespace wavegen {
+namespace ftdi {
 
-struct ft2232h_spi::impl
+struct spi::impl
 {
     impl(pins cs_pin) :
 		cs_pin { cs_pin },
@@ -47,7 +48,7 @@ struct ft2232h_spi::impl
     packet csPacket(bool cs_high)
     {
         uint8_t pin_state =
-            ft2232h_spi::pins::sck |
+            spi::pins::sck |
             (cs_high ? cs_pin : 0);
         return {
             opcodes::set_low_bits,
@@ -64,11 +65,11 @@ struct ft2232h_spi::impl
 	FT_HANDLE handle;
 };
 
-ft2232h_spi::~ft2232h_spi()
+spi::~spi()
 {
 }
 
-ft2232h_spi::ft2232h_spi(
+spi::spi(
     pins cs, int vid, int pid,
     const char *descr, const char *serial)
     noexcept(false) :
@@ -77,18 +78,18 @@ ft2232h_spi::ft2232h_spi(
     d->init(vid, pid, descr, serial);
 }
 
-ft2232h_spi::ft2232h_spi(ft2232h_spi&& other) noexcept(true)
+spi::spi(spi&& other) noexcept(true)
     : d(std::move(other.d))
 {
 }
 
-ft2232h_spi& ft2232h_spi::operator=(ft2232h_spi&& other) noexcept(true)
+spi& spi::operator=(spi&& other) noexcept(true)
 {
     std::swap(d, other.d);
     return *this;
 }
 
-void ft2232h_spi::transmit(const packet& payload)
+void spi::transmit(const packet& payload)
 {
     if (payload.size < 1) {
         throw error(WHEN("can't send a packet with <1 bytes."));
@@ -107,7 +108,7 @@ void ft2232h_spi::transmit(const packet& payload)
 	}
 }
 
-uint32 ft2232h_spi::impl::findChannel(int vid, int pid, const char *descr, const char *serial)
+uint32 spi::impl::findChannel(int vid, int pid, const char *descr, const char *serial)
 {
 	uint32 numChannels;
 	if (SPI_GetNumChannels(&numChannels)) {
@@ -148,7 +149,7 @@ uint32 ft2232h_spi::impl::findChannel(int vid, int pid, const char *descr, const
 	onError("No matching devices found.");
 }
 
-void ft2232h_spi::impl::init(int vid, int pid, const char *descr, const char *serial)
+void spi::impl::init(int vid, int pid, const char *descr, const char *serial)
 {
 	auto channel = findChannel(vid, pid, descr, serial);
 
@@ -178,9 +179,10 @@ void ft2232h_spi::impl::init(int vid, int pid, const char *descr, const char *se
 	}
 }
 
-void ft2232h_spi::impl::onError(const std::string& when)
+void spi::impl::onError(const std::string& when)
 {
-	throw ftdi_error(when);
+	throw error(when);
 }
 
+} /* namespace ftdi */
 } /* namespace wavegen */

@@ -60,7 +60,7 @@ public:
 private:
     void initDac();
 
-    ft2232h_spi spi;
+    ftdi::spi spi;
     uint32_t mclk_freq;
 };
 

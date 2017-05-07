@@ -26,15 +26,15 @@ namespace wavegen
 
 struct packet;
 
-struct ftdi_error : public error
+namespace ftdi {
+
+struct error : public wavegen::error
 {
 public:
-    ftdi_error(const std::string& what) : error(what) { }
+    error(const std::string& what) : wavegen::error(what) { }
 };
 
-
-
-struct ft2232h_spi
+struct spi
 {
 public:
     enum pins : uint8_t {
@@ -51,17 +51,17 @@ public:
         sdata = adbus1
     };
 
-    virtual ~ft2232h_spi() noexcept(true);
+    virtual ~spi() noexcept(true);
 
-    ft2232h_spi(
+    spi(
         pins cs_pin, int vid, int pid,
         const char *descr, const char *serial = nullptr
     );
-    ft2232h_spi(const ft2232h_spi&) = delete;
-    ft2232h_spi(ft2232h_spi&&) noexcept(true);
+    spi(const spi&) = delete;
+    spi(spi&&) noexcept(true);
 
-    ft2232h_spi& operator=(const ft2232h_spi&) = delete;
-    ft2232h_spi& operator=(ft2232h_spi&&) noexcept(true);
+    spi& operator=(const spi&) = delete;
+    spi& operator=(spi&&) noexcept(true);
 
     void transmit(const packet& p);
 
@@ -86,6 +86,8 @@ private:
     struct impl;
     std::unique_ptr<impl> d;
 };
+
+} /* namespace ftdi */
 
 } /* namespace wavegen */
 

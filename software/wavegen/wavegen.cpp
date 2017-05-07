@@ -39,7 +39,7 @@ constexpr int pid = 0x6010;
 } /* namespace */
 
 device::device() :
-    spi { ft2232h_spi::pins::adbus3, vid, pid, "USB Function Generator" },
+    spi { ftdi::spi::pins::adbus3, vid, pid, "USB Function Generator" },
     mclk_freq { ad9837::default_mclk_freq }
 {
     initDac();
