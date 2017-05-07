@@ -27,6 +27,18 @@ namespace wavegen {
 namespace ftdi {
 
 namespace {
+
+ftdi_context *getContext()
+{
+    static std::unique_ptr<ftdi_context, decltype(&ftdi_free)> global_ctxt
+    { nullptr, &ftdi_free };
+    if (!global_ctxt) {
+        global_ctxt = { ftdi_new(), &ftdi_free };
+    }
+
+    return global_ctxt.get();
+}
+
 constexpr uint16_t spi_clkdiv = 0x05db; /* 1 MHz */
 constexpr uint8_t bad_opcode_reply = 0xfa;
 }
@@ -34,12 +46,9 @@ constexpr uint8_t bad_opcode_reply = 0xfa;
 struct spi::impl
 {
     impl(pins cs_pin) :
-        ctxt(ftdi_new()),
+        ctxt(getContext()),
         cs_pin(cs_pin)
     {
-    }
-    ~impl() {
-        ftdi_free(ctxt);
     }
 
     packet csPacket(bool cs_high);
