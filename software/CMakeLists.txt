@@ -10,8 +10,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 find_package(FTDI)
 find_package(Boost COMPONENTS python)
 
-include(GitVersion)
-
 include_directories(${CMAKE_SOURCE_DIR})
 
 if (LIBFTDI_FOUND)

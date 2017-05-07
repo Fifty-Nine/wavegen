@@ -141,8 +141,3 @@ void device::initDac()
 }
 
 } /* namespace wavegen */
-
-std::string wavegen::getLibraryVersion()
-{
-    return { GIT_REVISION };
-}

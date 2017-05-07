@@ -21,6 +21,7 @@
 #include <string>
 
 #include "wavegen/ft2232h-spi.h"
+#include "wavegen/version.h"
 
 struct ftdi_context;
 
@@ -59,8 +60,6 @@ private:
     ft2232h_spi spi;
     uint32_t mclk_freq;
 };
-
-std::string getLibraryVersion();
 
 } /* namespace wavegen */
 
