@@ -42,7 +42,7 @@ struct ft2232h_spi::impl
     }
 
     packet csPacket(bool cs_high);
-    void init(int vid, int pid, const char *descr);
+    void init(int vid, int pid, const char *descr, const char *serial);
     void sendRaw(const packet& p);
     void sync();
     void expectResponse(const packet& p);
@@ -57,11 +57,13 @@ ft2232h_spi::~ft2232h_spi()
 {
 }
 
-ft2232h_spi::ft2232h_spi(pins cs, int vid, int pid, const char *descr)
+ft2232h_spi::ft2232h_spi(
+    pins cs, int vid, int pid,
+    const char *descr, const char *serial)
     noexcept(false) :
     d(new impl { cs })
 {
-    d->init(vid, pid, descr);
+    d->init(vid, pid, descr, serial);
 }
 
 ft2232h_spi::ft2232h_spi(ft2232h_spi&& other) noexcept(true)
@@ -109,13 +111,15 @@ packet ft2232h_spi::impl::csPacket(bool cs_high)
     };
 }
 
-void ft2232h_spi::impl::init(int vid, int pid, const char *descr)
+void ft2232h_spi::impl::init(
+    int vid, int pid,
+    const char *descr, const char *serial)
 {
     if (ftdi_set_interface(ctxt, INTERFACE_A)) {
         onError(WHEN("ftdi_set_interface"));
     }
 
-    if (ftdi_usb_open_desc(ctxt, vid, pid, descr, nullptr)) {
+    if (ftdi_usb_open_desc(ctxt, vid, pid, descr, serial)) {
         onError(WHEN("ftdi_usb_open_desc"));
     }
 

@@ -32,6 +32,8 @@ public:
     ftdi_error(const std::string& what) : error(what) { }
 };
 
+
+
 struct ft2232h_spi
 {
 public:
@@ -51,7 +53,10 @@ public:
 
     virtual ~ft2232h_spi() noexcept(true);
 
-    ft2232h_spi(pins cs_pin, int vid, int pid, const char *descr);
+    ft2232h_spi(
+        pins cs_pin, int vid, int pid,
+        const char *descr, const char *serial = nullptr
+    );
     ft2232h_spi(const ft2232h_spi&) = delete;
     ft2232h_spi(ft2232h_spi&&) noexcept(true);
 

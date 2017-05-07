@@ -56,8 +56,8 @@ struct ft2232h_spi::impl
         };
     }
 
-	uint32 findChannel(int vid, int pid, const char *descr);
-    void init(int vid, int pid, const char *descr);
+	uint32 findChannel(int vid, int pid, const char *descr, const char *serial);
+    void init(int vid, int pid, const char *descr, const char *serial);
     void onError(const std::string& when);
 
     pins cs_pin;
@@ -68,11 +68,13 @@ ft2232h_spi::~ft2232h_spi()
 {
 }
 
-ft2232h_spi::ft2232h_spi(pins cs, int vid, int pid, const char *descr)
+ft2232h_spi::ft2232h_spi(
+    pins cs, int vid, int pid,
+    const char *descr, const char *serial)
     noexcept(false) :
     d(new impl { cs })
 {
-    d->init(vid, pid, descr);
+    d->init(vid, pid, descr, serial);
 }
 
 ft2232h_spi::ft2232h_spi(ft2232h_spi&& other) noexcept(true)
@@ -105,7 +107,7 @@ void ft2232h_spi::transmit(const packet& payload)
 	}
 }
 
-uint32 ft2232h_spi::impl::findChannel(int vid, int pid, const char *descr)
+uint32 ft2232h_spi::impl::findChannel(int vid, int pid, const char *descr, const char *serial)
 {
 	uint32 numChannels;
 	if (SPI_GetNumChannels(&numChannels)) {
@@ -116,30 +118,39 @@ uint32 ft2232h_spi::impl::findChannel(int vid, int pid, const char *descr)
 		onError("No device available.");
 	}
 
-	std::string expected_descr{ descr };
+	std::string expected_descr { descr };
 	expected_descr += " A";
+
+    std::string expected_serial { serial ? serial : "" };
+
+    auto match = [vid, pid, &expected_descr, &expected_serial](
+        const FT_DEVICE_LIST_INFO_NODE& info)
+    {
+        auto ch_vid = (info.ID >> 16) & 0xFFFF;
+        auto ch_pid = (info.ID      ) & 0xFFFF;
+
+        if (ch_vid != vid || ch_pid != pid) {
+            return false;
+        }
+
+        return expected_descr == info.Description &&
+            (expected_serial.empty() || expected_serial == info.SerialNumber);
+    };
 
 	for (uint32 i = 0; i < numChannels; ++i) {
 		FT_DEVICE_LIST_INFO_NODE channel_info;
 		if (SPI_GetChannelInfo(i, &channel_info)) {
 			onError(WHEN("SPI_GetChannelInfo"));
 		}
-		int channel_vid = (channel_info.ID >> 16) & 0xFFFF;
-		int channel_pid = channel_info.ID & 0xFFFF;
 
-		if ((channel_vid == vid) &&
-			(channel_pid == pid) &&
-			(channel_info.Description == expected_descr))
-		{
-			return (int)i;
-		}
+        if (match(channel_info)) { return (int)i; }
 	}
 	onError("No matching devices found.");
 }
 
-void ft2232h_spi::impl::init(int vid, int pid, const char *descr)
+void ft2232h_spi::impl::init(int vid, int pid, const char *descr, const char *serial)
 {
-	auto channel = findChannel(vid, pid, descr);
+	auto channel = findChannel(vid, pid, descr, serial);
 
 	if (SPI_OpenChannel(channel, &handle)) {
 		onError("SPI_OpenChannel");
