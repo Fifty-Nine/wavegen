@@ -1,3 +1,5 @@
+*.pyc
+
 # On windows, even out of tree builds like to dump log files here
 # for reasons I don't care to investigate.
 pywavegen.dir
