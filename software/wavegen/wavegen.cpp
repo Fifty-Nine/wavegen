@@ -123,6 +123,7 @@ void device::setOutput(channel_id channel, output_waveform type)
         break;
     case output_waveform::square:
         command |= ctrl_bits::opbiten;
+	command |= ctrl_bits::div2;
         break;
     }
 
